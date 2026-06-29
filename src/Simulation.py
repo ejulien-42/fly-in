@@ -1,22 +1,23 @@
-from src.models import ZoneType
+from typing import Optional
+from src.models import ZoneType, Graph, Zone, Connection
 
 
 class Simulation:
-    def __init__(self, path: list, graph):
+    def __init__(self, path: list[Zone], graph: Graph) -> None:
         self.path = path
         self.graph = graph
         self.nb_drones = self.graph.nb_drones
 
-    def simulate(self):
-        path = self.path  # list[Zone]
+    def simulate(self) -> list[list[str]]:
+        path = self.path
         end_idx = len(path) - 1
         idx = {i: 0 for i in range(1, self.nb_drones + 1)}
         remaining = {i: 0 for i in range(1, self.nb_drones + 1)}
-        turns = []
+        turns: list[list[str]] = []
         while not all(idx[i] == end_idx
                       for i in range(1, self.nb_drones + 1)):
-            zone_occupancy = {}
-            link_usage = {}
+            zone_occupancy: dict[Zone, int] = {}
+            link_usage: dict[frozenset[str], int] = {}
             for i in range(1, self.nb_drones + 1):
                 if remaining[i] > 0:
                     # flying: reserves its destination zone and its link
@@ -46,6 +47,7 @@ class Simulation:
                 next_zone = path[cur + 1]
                 link = frozenset([path[cur].name, next_zone.name])
                 conn = self._get_connection(path[cur].name, next_zone.name)
+                assert conn is not None
                 is_terminal = next_zone.name in (self.graph.start_hub,
                                                  self.graph.end_hub)
                 zone_full = (not is_terminal
@@ -69,7 +71,8 @@ class Simulation:
             turns.append(turn)
         return turns
 
-    def _get_connection(self, z1: str, z2: str):
+    def _get_connection(self, z1: str, z2: str) -> Optional[Connection]:
         for c in self.graph.connections:
             if c.involves(z1) and c.involves(z2):
                 return c
+        return None

@@ -25,8 +25,6 @@ class Color(Enum):
 
     @classmethod
     def get_color(cls, color: str) -> tuple[int, int, int]:
-        if color is None:
-            return cls.BLACK
         for col in cls:
             if col.value[0] == color:
                 return col.value[1]

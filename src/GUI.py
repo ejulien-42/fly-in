@@ -1,29 +1,38 @@
 import pygame
+from typing import TypedDict
 from src.color import Color
-from src.models import Zone
+from src.models import Graph, Zone, Connection, ZoneType
+
+
+class ZoneInfo(TypedDict):
+    color: str
+    coordinates: tuple[int, int]
+    name: str
+    type: ZoneType
+    max_drones: int
 
 
 class GUI:
-    def __init__(self, graph):
+    def __init__(self, graph: Graph) -> None:
         pygame.init()
         self.WIDTH, self.HEIGHT = 1000, 800
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("ejulien's fly-in")
-        self.graph = graph
-        self.cons = self.graph.connections
+        self.graph: Graph = graph
+        self.cons: list[Connection] = self.graph.connections
         self.zones: list[Zone] = []
         self.zone_names: list[str] = []
         self.concerned_zones: list[str] = []
-        self.concerned_cons: list[str] = []
-        self.scaled_cos = {}
+        self.concerned_cons: list[Connection] = []
+        self.scaled_cos: dict[str, tuple[float, float]] = {}
         self.size = (self.HEIGHT + self.WIDTH) / 100
         self.rad = self.size / 2
-        self.selected = None
+        self.selected: Zone | None = None
         self.info = ""
         self.turn_id = 0
         self.nb_turns = 0
 
-    def run(self, turns):
+    def run(self, turns: list[list[str]]) -> None:
         self.nb_turns = len(turns)
         start = self.graph.start_hub
         initial = [f"D{i}-{start}"
@@ -92,7 +101,7 @@ class GUI:
             return True
         return False
 
-    def update_drones(self):
+    def update_drones(self) -> None:
         turn = self.turns[self.turn_id]
         print(f"\nTurn number: {self.turn_id}")
         print(turn)
@@ -107,13 +116,15 @@ class GUI:
                 if con.zone1 in action and con.zone2 in action:
                     self.concerned_cons.append(con)
 
-    def zone_info(self):
-        info = {}
-        info["color"] = self.selected.color
-        info["coordinates"] = (self.selected.x, self.selected.y)
-        info["name"] = self.selected.name
-        info["type"] = self.selected.zone_type
-        info["max_drones"] = self.selected.max_drones
+    def zone_info(self) -> None:
+        assert self.selected is not None
+        info: ZoneInfo = {
+            "color": self.selected.color,
+            "coordinates": (self.selected.x, self.selected.y),
+            "name": self.selected.name,
+            "type": self.selected.zone_type,
+            "max_drones": self.selected.max_drones,
+        }
         txt = f"Zone: {info['name']},  "
         txt += f"Coordinates: {info['coordinates']},  "
         txt += f"Color: {info['color']},  "
@@ -121,13 +132,13 @@ class GUI:
         txt += f"Max drones: {info['max_drones']}"
         self.info = txt
 
-    def draw_nb_turns(self):
+    def draw_nb_turns(self) -> None:
         font = pygame.font.SysFont("arial", 24)
         txt = font.render(f"{self.turn_id}/{self.nb_turns} turns",
                           True, (0, 0, 0))
         self.screen.blit(txt, (self.WIDTH * 0.85, self.HEIGHT * 0.02))
 
-    def draw_drones(self):
+    def draw_drones(self) -> None:
         image = pygame.image.load("drone.png").convert_alpha()
         rad = self.rad
         for zone in self.zones:
@@ -151,12 +162,12 @@ class GUI:
                                            (self.size * 1.5, self.size * 1.5))
             self.screen.blit(image, (final_x - rad * 1.5, final_y - rad * 1.5))
 
-    def draw_hubs(self):
+    def draw_hubs(self) -> None:
         for zone in self.zones:
             pygame.draw.circle(self.screen, Color.get_color(zone.color),
                                self.scaled_cos[zone.name], self.size)
 
-    def draw_connections(self):
+    def draw_connections(self) -> None:
         for con in self.graph.connections:
             z1 = con.zone1
             z2 = con.zone2
@@ -167,13 +178,13 @@ class GUI:
             pygame.draw.line(self.screen, (0, 0, 0),
                              (x1, y1), (x2, y2), 1)
 
-    def get_coordinates(self):
+    def get_coordinates(self) -> None:
         all_x = []
         all_y = []
-        for zone in self.graph.zones:
-            all_x.append(self.graph.get_zone(zone).x)
-            all_y.append(self.graph.get_zone(zone).y)
-            self.zones.append(self.graph.get_zone(zone))
+        for name in self.graph.zones:
+            all_x.append(self.graph.get_zone(name).x)
+            all_y.append(self.graph.get_zone(name).y)
+            self.zones.append(self.graph.get_zone(name))
         max_x = max(all_x)
         min_x = min(all_x)
         max_y = max(all_y)
@@ -182,15 +193,15 @@ class GUI:
         real_height = 0.8 * self.HEIGHT
         range_x = max_x - min_x
         range_y = max_y - min_y
-        for zone in self.zones:
+        for z in self.zones:
             if range_x == 0:
                 x_scaled = real_width / 2
             else:
-                x_scaled = (real_width / range_x) * (zone.x - min_x)
+                x_scaled = (real_width / range_x) * (z.x - min_x)
             if range_y == 0:
                 y_scaled = real_height / 2
             else:
-                y_scaled = (real_height / range_y) * (zone.y - min_y)
+                y_scaled = (real_height / range_y) * (z.y - min_y)
             x_scaled += self.WIDTH * 0.1
             y_scaled += self.HEIGHT * 0.1
             if y_scaled > self.HEIGHT / 2:
@@ -199,4 +210,4 @@ class GUI:
             elif y_scaled < self.HEIGHT / 2:
                 d = self.HEIGHT / 2 - y_scaled
                 y_scaled = self.HEIGHT / 2 + d
-            self.scaled_cos[zone.name] = (x_scaled, y_scaled)
+            self.scaled_cos[z.name] = (x_scaled, y_scaled)

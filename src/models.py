@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
 
 
 class ZoneType(Enum):
@@ -21,7 +20,7 @@ class Zone:
     x: int
     y: int
     zone_type: ZoneType = ZoneType.NORMAL
-    color: Optional[str] = None
+    color: str = "black"
     max_drones: int = 1
     is_start: bool = False
     is_end: bool = False

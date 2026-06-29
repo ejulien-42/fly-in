@@ -99,13 +99,8 @@ class Parser:
             )
         self.nb_drones = n
 
-    def parse_zone(
-        self,
-        line: str,
-        lineno: int,
-        is_start: bool = False,
-        is_end: bool = False,
-    ) -> None:
+    def parse_zone(self, line: str, lineno: int,
+                   is_start: bool = False, is_end: bool = False) -> None:
         """Parse a hub / start_hub / end_hub line and register the zone."""
         _, _, rest = line.partition(':')
         rest = rest.strip()
@@ -167,7 +162,7 @@ class Parser:
 
     def parse_zone_meta(
         self, meta_str: str, lineno: int
-    ) -> tuple[ZoneType, Optional[str], int]:
+    ) -> tuple[ZoneType, str, int]:
         """Return (zone_type, color, max_drones) from bracket content."""
         zone_type = ZoneType.NORMAL
         color: str = "black"

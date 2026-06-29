@@ -1,16 +1,18 @@
 import heapq
-from src.models import ZoneType
+from typing import Optional
+from src.models import ZoneType, Zone, Graph
 
 
 class Pathfinder:
-    def __init__(self, graph):
+    def __init__(self, graph: Graph):
         self.zones = graph.zones.values()
         self.cons = graph.connections
         self.graph = graph
 
-    def dijkstra(self):
-        open_list = []
-        path = {zone: None for zone in self.zones}
+    def dijkstra(self) -> dict[Zone, Optional[Zone]]:
+        open_list: list[tuple[float, int, Zone]] = []
+        path: dict[Zone, Optional[Zone]] = {
+            zone: None for zone in self.zones}
         dist = {zone: float("inf") for zone in self.zones}
         loc = self.graph.get_zone(self.graph.start_hub)
         origin = loc
@@ -36,16 +38,20 @@ class Pathfinder:
                     heapq.heappush(open_list, (new_dist, counter, neighbor))
         return path
 
-    def get_actual_path(self, path: dict) -> list:
+    def get_actual_path(self,
+                        path: dict[Zone,
+                                   Optional[Zone]]) -> list[Zone] | None:
         end_hub = self.graph.get_zone(self.graph.end_hub)
         start_hub = self.graph.get_zone(self.graph.start_hub)
-        new = []
+        new: list[Zone] = []
         curr = end_hub
         if end_hub not in path.keys():
             return None
         while curr != start_hub:
             new.append(curr)
-            curr = path[curr]
+            parent = path[curr]
+            assert parent is not None
+            curr = parent
         new.append(start_hub)
         new.reverse()
         return new
