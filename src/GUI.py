@@ -6,6 +6,7 @@ from src.models import Graph, Zone, Connection, ZoneType
 
 
 class ZoneInfo(TypedDict):
+    """Typed Dictionnary for an info dictionnary."""
     color: str
     coordinates: tuple[int, int]
     name: str
@@ -14,7 +15,9 @@ class ZoneInfo(TypedDict):
 
 
 class GUI:
+    """Main class for Graphical Interface."""
     def __init__(self, graph: Graph) -> None:
+        """GUI class constructor."""
         pygame.init()
         self.WIDTH, self.HEIGHT = 1000, 800
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
@@ -34,6 +37,7 @@ class GUI:
         self.nb_turns = 0
 
     def run(self, turns: list[list[str]]) -> None:
+        """Main function with the loop to display the pygame window."""
         self.nb_turns = len(turns)
         start = self.graph.start_hub
         initial = [f"D{i}-{start}"
@@ -99,6 +103,10 @@ class GUI:
             pygame.display.flip()
 
     def is_connection(self, string: str) -> bool:
+        """
+        Simple utility method to determine if a drone is on a connection or
+        not at the moment of the turn
+        """
         i = 0
         for char in string:
             if char == "-":
@@ -108,6 +116,7 @@ class GUI:
         return False
 
     def update_drones(self) -> None:
+        """Update the occupied zones on the map when the turn id changes."""
         turn = self.turns[self.turn_id]
         print(f"\nTurn number: {self.turn_id}")
         print(*turn)
@@ -123,6 +132,7 @@ class GUI:
                     self.concerned_cons.append(con)
 
     def zone_info(self) -> None:
+        """Get a zones info, used when clicked on."""
         assert self.selected is not None
         info: ZoneInfo = {
             "color": self.selected.color,
@@ -139,6 +149,7 @@ class GUI:
         self.info = txt
 
     def draw_button(self) -> None:
+        """Display for the 'clear' button."""
         self.btn = pygame.Rect(0.03 * self.WIDTH, 0.03 * self.HEIGHT, 70, 50)
         pygame.draw.rect(self.screen, (200, 200, 200), self.btn)
         font = pygame.font.SysFont("arial", 20)
@@ -146,18 +157,24 @@ class GUI:
         self.screen.blit(txt, txt.get_rect(center=self.btn.center))
 
     def draw_nb_turns(self) -> None:
+        """Display for the number of turns."""
         font = pygame.font.SysFont("arial", 24)
         txt = font.render(f"{self.turn_id}/{self.nb_turns} turns",
                           True, (0, 0, 0))
         self.screen.blit(txt, (self.WIDTH * 0.85, self.HEIGHT * 0.02))
 
     def draw_nb_drones(self) -> None:
+        """Display for the total number of drones in the level."""
         font = pygame.font.SysFont("arial", 24)
         txt = font.render(f"{self.graph.nb_drones}",
                           True, (0, 0, 0))
         self.screen.blit(txt, (self.WIDTH * 0.5, self.HEIGHT * 0.02))
 
     def draw_drones(self) -> None:
+        """
+        Display function to draw the drones either on zones of connections if
+        on a path to a restricted zone.
+        """
         image = pygame.image.load("drone.png").convert_alpha()
         rad = self.rad
         for zone in self.zones:
@@ -182,11 +199,13 @@ class GUI:
             self.screen.blit(image, (final_x - rad * 1.5, final_y - rad * 1.5))
 
     def draw_hubs(self) -> None:
+        """Draw all the different zones on the window."""
         for zone in self.zones:
             pygame.draw.circle(self.screen, Color.get_color(zone.color),
                                self.scaled_cos[zone.name], self.size)
 
     def draw_connections(self) -> None:
+        """Draw all the connections between zones."""
         for con in self.graph.connections:
             z1 = con.zone1
             z2 = con.zone2
@@ -198,6 +217,11 @@ class GUI:
                              (x1, y1), (x2, y2), 1)
 
     def get_coordinates(self) -> None:
+        """
+        Creates a dictionnary of scaled coordinates for each zone.
+        These coordinates are calculated using their coordinates
+        and the window's size.
+        """
         all_x = []
         all_y = []
         for name in self.graph.zones:

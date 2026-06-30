@@ -3,12 +3,21 @@ from src.models import ZoneType, Graph, Zone, Connection
 
 
 class Simulation:
+    """
+    Simulation class, will be used to simulate each
+    turn necessary for map completion.
+    """
     def __init__(self, path: list[Zone], graph: Graph) -> None:
+        """Constructor for the simulation class."""
         self.path = path
         self.graph = graph
         self.nb_drones = self.graph.nb_drones
 
     def simulate(self) -> list[list[str]]:
+        """
+        Main method of the class. Returns all the
+        turns necessary for map completion
+        """
         path = self.path
         end_idx = len(path) - 1
         idx = {i: 0 for i in range(1, self.nb_drones + 1)}
@@ -71,6 +80,10 @@ class Simulation:
         return turns
 
     def _get_connection(self, z1: str, z2: str) -> Optional[Connection]:
+        """
+        Utility method to get the connection between
+        2 zones using their name as parameter.
+        """
         for c in self.graph.connections:
             if c.involves(z1) and c.involves(z2):
                 return c

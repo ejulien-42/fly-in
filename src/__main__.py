@@ -6,6 +6,7 @@ import sys
 
 
 def choice() -> str:
+    """Function to choose the desired map."""
     maps = [
         "maps/easy/01_linear_path.txt",
         "maps/easy/02_simple_fork.txt",
@@ -38,6 +39,7 @@ def choice() -> str:
 
 
 def main() -> None:
+    """Main function of the program."""
     filename = choice()
     parser = Parser()
     try:

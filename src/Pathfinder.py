@@ -4,12 +4,15 @@ from src.models import ZoneType, Zone, Graph
 
 
 class Pathfinder:
+    """Th main algorithm class"""
     def __init__(self, graph: Graph):
+        """Constructor for the pathfinder class."""
         self.zones = graph.zones.values()
         self.cons = graph.connections
         self.graph = graph
 
     def dijkstra(self) -> dict[Zone, Optional[Zone]]:
+        """Main dijkstra algorithm."""
         open_list: list[tuple[float, int, Zone]] = []
         path: dict[Zone, Optional[Zone]] = {
             zone: None for zone in self.zones}
@@ -41,6 +44,7 @@ class Pathfinder:
     def get_actual_path(self,
                         path: dict[Zone,
                                    Optional[Zone]]) -> list[Zone] | None:
+        """Gets the path to a list of zones, in the right order."""
         end_hub = self.graph.get_zone(self.graph.end_hub)
         start_hub = self.graph.get_zone(self.graph.start_hub)
         new: list[Zone] = []

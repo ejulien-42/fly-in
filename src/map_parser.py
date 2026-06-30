@@ -5,7 +5,6 @@ from src.models import Connection, Graph, Zone, ZoneType
 
 class ParseError(Exception):
     """Raised when the input file violates the expected format."""
-
     def __init__(self, lineno: int, message: str) -> None:
         """Store line number and human-readable cause."""
         prefix = f"Line {lineno}: " if lineno > 0 else ""
@@ -16,7 +15,6 @@ class ParseError(Exception):
 
 class Parser:
     """Parses a drone map file line by line and builds a Graph.
-
     One instance = one parse run. Do not reuse across files.
     """
 
@@ -302,9 +300,8 @@ class Parser:
                 )
         return max_link_capacity
 
-    def extract_meta(
-        self, rest: str, lineno: int
-    ) -> tuple[str, Optional[str]]:
+    def extract_meta(self, rest: str,
+                     lineno: int) -> tuple[str, Optional[str]]:
         """Split 'tokens [meta content]' into ('tokens', 'meta content').
 
         Returns (rest, None) when no brackets are present.

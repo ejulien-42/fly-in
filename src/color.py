@@ -26,6 +26,7 @@ class Color(Enum):
 
     @classmethod
     def get_color(cls, color: str) -> tuple[int, int, int]:
+        """Get a color's RGB code from a string"""
         for col in cls:
             if col.value[0] == color:
                 return col.value[1]

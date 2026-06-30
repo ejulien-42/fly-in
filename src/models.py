@@ -56,7 +56,6 @@ class Connection:
 @dataclass
 class Graph:
     """The fully parsed drone routing graph."""
-
     nb_drones: int
     start_hub: str
     end_hub: str
@@ -72,6 +71,7 @@ class Graph:
         return res
 
     def get_zone(self, zone: str) -> Zone:
+        """Returns a zone with the 'Zone' type using its name as a parameter"""
         return self.zones[zone]
 
     def is_zone_blocked(self, zone: str) -> bool:
