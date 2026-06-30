@@ -143,7 +143,7 @@ class Parser:
                 raise ParseError(lineno, "multiple 'end_hub' definitions")
             self.end_hub = name
         zone_type = ZoneType.NORMAL
-        color: str = "black"
+        color: str = "yellow"
         max_drones = 1
         if meta_str is not None:
             zone_type, color, max_drones = (
@@ -160,12 +160,11 @@ class Parser:
             is_end=is_end,
         )
 
-    def parse_zone_meta(
-        self, meta_str: str, lineno: int
-    ) -> tuple[ZoneType, str, int]:
+    def parse_zone_meta(self, meta_str: str,
+                        lineno: int) -> tuple[ZoneType, str, int]:
         """Return (zone_type, color, max_drones) from bracket content."""
         zone_type = ZoneType.NORMAL
-        color: str = "black"
+        color: str = "yellow"
         max_drones = 1
         seen: set[str] = set()
         for pair in meta_str.split():

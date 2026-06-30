@@ -1,5 +1,6 @@
 import pygame
 from typing import TypedDict
+import os
 from src.color import Color
 from src.models import Graph, Zone, Connection, ZoneType
 
@@ -47,6 +48,9 @@ class GUI:
         self.update_drones()
         while running:
             for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.btn.collidepoint(event.pos):
+                        os.system("clear")
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
                         self.turn_id = self.last_turn
@@ -85,6 +89,8 @@ class GUI:
             self.draw_hubs()
             self.draw_drones()
             self.draw_nb_turns()
+            self.draw_button()
+            self.draw_nb_drones()
             if self.selected is not None:
                 self.zone_info()
                 font = pygame.font.SysFont("arial", 18)
@@ -132,11 +138,24 @@ class GUI:
         txt += f"Max drones: {info['max_drones']}"
         self.info = txt
 
+    def draw_button(self) -> None:
+        self.btn = pygame.Rect(0.03 * self.WIDTH, 0.03 * self.HEIGHT, 70, 50)
+        pygame.draw.rect(self.screen, (200, 200, 200), self.btn)
+        font = pygame.font.SysFont("arial", 20)
+        txt = font.render("clear", True, (0, 0, 0))
+        self.screen.blit(txt, txt.get_rect(center=self.btn.center))
+
     def draw_nb_turns(self) -> None:
         font = pygame.font.SysFont("arial", 24)
         txt = font.render(f"{self.turn_id}/{self.nb_turns} turns",
                           True, (0, 0, 0))
         self.screen.blit(txt, (self.WIDTH * 0.85, self.HEIGHT * 0.02))
+
+    def draw_nb_drones(self) -> None:
+        font = pygame.font.SysFont("arial", 24)
+        txt = font.render(f"{self.graph.nb_drones}",
+                          True, (0, 0, 0))
+        self.screen.blit(txt, (self.WIDTH * 0.5, self.HEIGHT * 0.02))
 
     def draw_drones(self) -> None:
         image = pygame.image.load("drone.png").convert_alpha()

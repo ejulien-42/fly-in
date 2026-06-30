@@ -20,7 +20,7 @@ class Zone:
     x: int
     y: int
     zone_type: ZoneType = ZoneType.NORMAL
-    color: str = "black"
+    color: str = "yellow"
     max_drones: int = 1
     is_start: bool = False
     is_end: bool = False

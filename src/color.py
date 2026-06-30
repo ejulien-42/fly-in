@@ -22,6 +22,7 @@ class Color(Enum):
     VIOLET = ("violet", (238, 130, 238))
     CRIMSON = ("crimson", (220, 20, 60))
     RAINBOW = ("rainbow", (0, 0, 0))
+    LIME = ("lime", (170, 255, 0))
 
     @classmethod
     def get_color(cls, color: str) -> tuple[int, int, int]:
