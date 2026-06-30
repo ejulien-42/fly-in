@@ -20,7 +20,6 @@ class Simulation:
             link_usage: dict[frozenset[str], int] = {}
             for i in range(1, self.nb_drones + 1):
                 if remaining[i] > 0:
-                    # flying: reserves its destination zone and its link
                     dst = path[idx[i] + 1]
                     zone_occupancy[dst] = zone_occupancy.get(dst, 0) + 1
                     link = frozenset([path[idx[i]].name, dst.name])

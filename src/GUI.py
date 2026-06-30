@@ -110,7 +110,7 @@ class GUI:
     def update_drones(self) -> None:
         turn = self.turns[self.turn_id]
         print(f"\nTurn number: {self.turn_id}")
-        print(turn)
+        print(*turn)
         self.concerned_zones = []
         self.concerned_cons = []
         for action in turn:
