@@ -12,4 +12,4 @@ connection: start-junction [max_link_capacity=2]
 connection: junction-dead_end
 connection: junction-correct_path
 connection: correct_path-intermediate
-connection: intermediate-goal
+# connection: intermediate-goal

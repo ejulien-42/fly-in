@@ -45,7 +45,7 @@ class Pathfinder:
         start_hub = self.graph.get_zone(self.graph.start_hub)
         new: list[Zone] = []
         curr = end_hub
-        if end_hub not in path.keys():
+        if path[end_hub] is None:
             return None
         while curr != start_hub:
             new.append(curr)
