@@ -19,7 +19,7 @@ def choice() -> str:
         "maps/hard/03_ultimate_challenge.txt",
         "maps/challenger/01_the_impossible_dream.txt"
     ]
-    print("Welcome to ejulien's fly-in. Please chose a map:\n")
+    print("\nWelcome to ejulien's fly-in. Please chose a map:\n")
     for i, m in enumerate(maps):
         print(f"{i + 1}: {m.split('/')[2]}")
     while True:

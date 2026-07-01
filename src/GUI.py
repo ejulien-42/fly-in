@@ -26,8 +26,8 @@ class GUI:
         self.cons: list[Connection] = self.graph.connections
         self.zones: list[Zone] = []
         self.zone_names: list[str] = []
-        self.concerned_zones: list[str] = []
-        self.concerned_cons: list[Connection] = []
+        self.concerned_zones: set[str] = set()
+        self.concerned_cons: set[Connection] = set()
         self.scaled_cos: dict[str, tuple[float, float]] = {}
         self.size = (self.HEIGHT + self.WIDTH) / 100
         self.rad = self.size / 2
@@ -120,16 +120,29 @@ class GUI:
         turn = self.turns[self.turn_id]
         print(f"\nTurn number: {self.turn_id}")
         print(*turn)
-        self.concerned_zones = []
-        self.concerned_cons = []
+        print()
+        self.concerned_zones = set()
+        self.concerned_cons = set()
         for action in turn:
             for zone in self.zone_names:
                 if zone in action and not (self.is_connection(action)):
-                    self.concerned_zones.append(zone)
+                    self.concerned_zones.add(zone)
         for action in turn:
             for con in self.cons:
                 if con.zone1 in action and con.zone2 in action:
-                    self.concerned_cons.append(con)
+                    self.concerned_cons.add(con)
+        for z in self.concerned_zones:
+            i = 0
+            for a in turn:
+                if z in a and not (self.is_connection(a)):
+                    i += 1
+            print(f"{z}: {i}/{self.graph.get_zone(z).max_drones} drones")
+        for c in self.concerned_cons:
+            i = 0
+            for a in turn:
+                if f"{c.zone1}-{c.zone2}" in a or f"{c.zone2}-{c.zone1}" in a:
+                    i += 1
+            print(f"{c.zone1}-{c.zone2}: {i}/{c.max_link_capacity} drones")
 
     def zone_info(self) -> None:
         """Get a zones info, used when clicked on."""

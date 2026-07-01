@@ -44,6 +44,9 @@ class Connection:
     zone2: str
     max_link_capacity: int = 1
 
+    def __hash__(self) -> int:
+        return hash(f"{self.zone1}-{self.zone2}")
+
     def other(self, name: str) -> str:
         """Return the zone on the opposite side of this connection."""
         return self.zone2 if name == self.zone1 else self.zone1
