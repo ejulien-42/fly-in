@@ -4,7 +4,7 @@ from src.models import ZoneType, Zone, Graph
 
 
 class Pathfinder:
-    """Th main algorithm class"""
+    """The main algorithm class"""
     def __init__(self, graph: Graph):
         """Constructor for the pathfinder class."""
         self.zones = graph.zones.values()
