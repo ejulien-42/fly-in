@@ -16,7 +16,8 @@ def choice() -> str:
         "maps/medium/03_priority_puzzle.txt",
         "maps/hard/01_maze_nightmare.txt",
         "maps/hard/02_capacity_hell.txt",
-        "maps/hard/03_ultimate_challenge.txt"
+        "maps/hard/03_ultimate_challenge.txt",
+        "maps/challenger/01_the_impossible_dream.txt"
     ]
     print("Welcome to ejulien's fly-in. Please chose a map:\n")
     for i, m in enumerate(maps):
@@ -26,6 +27,8 @@ def choice() -> str:
         choice: int | str = input("Choice: ")
         try:
             choice = int(choice)
+            if choice < 1 or choice > 10:
+                raise ValueError
             try:
                 with open(maps[choice - 1]) as _:
                     pass
@@ -40,9 +43,9 @@ def choice() -> str:
 
 def main() -> None:
     """Main function of the program."""
-    filename = choice()
-    parser = Parser()
     try:
+        filename = choice()
+        parser = Parser()
         graph = parser.parse_file(filename)
         p = Pathfinder(graph)
         path = p.get_actual_path(p.dijkstra())
